@@ -3,11 +3,11 @@ import './App.css';
 import _ from 'lodash';
 
 const Stars = (props) => {
-  const numberOfStars = 1 + Math.floor(Math.random()*9);
+  // const numberOfStars = 1 + Math.floor(Math.random()*9);
 
     return (
       <div className="col-5">
-        {_.range(0,numberOfStars).map(i => 
+        {_.range(0,props.numberOfStars).map(i => 
              <i key={i} className="fa fa-star"></i>
         )}
       </div>
@@ -17,8 +17,9 @@ const Stars = (props) => {
 const Answer = (props) => {
     return (
       <div className="col-5">
-      <span>4</span>
-      <span>5</span>
+        {props.selectedNumbers.map((number,i)=>
+        <span key={i}>{number}</span>
+        )}
     </div>
     );
 }
@@ -32,12 +33,17 @@ const Button = (props) => {
 }
 
 const Numbers = (props) => {
+  const numberClassName = (number) => {
+    if(props.selectedNumbers.indexOf(number) >=0)
+      return 'selected';
+  }
 
   return (
     <div className="card text-center">
       <div>
         {Numbers.list.map((number,i)=>
-        <span key={i}>{number}</span>
+        <span key={i} className={numberClassName(number)}
+              onClick={()=>props.selectNumber(number)}>{number}</span>
         )}
       </div>
     </div>
@@ -47,11 +53,33 @@ const Numbers = (props) => {
 Numbers.list = _.range(1,10);
 
 class Game extends Component {
+  state = {
+    selectedNumbers:[],
+    numberOfStars: 1 + Math.floor(Math.random()*9)
+
+  }
+
+  selectNumber = (clickedNumber) => {
+    if(this.state.selectedNumbers.indexOf(clickedNumber)>=0){return;}
+    this.setState(prevState => ({
+      selectedNumbers: prevState.selectedNumbers.concat(clickedNumber)
+    }));
+  };
   render() {
     return (
-      <div>
+      <div className="container">
         <h3>Play Nine</h3>
+        <hr />
+        <div className="row">
+          <Stars numberOfStars={this.state.numberOfStars}/>
+          <Button />
+          <Answer selectedNumbers={this.state.selectedNumbers} />
+        </div>
+        <br />
+        <Numbers selectedNumbers={this.state.selectedNumbers} 
+                 selectNumber = {this.selectNumber}/>
       </div>
+      
     );
   }
 }
@@ -60,16 +88,8 @@ class Game extends Component {
 class App extends Component {
   render() {
     return (
-      <div className="container">
-        <h3>Play Nine</h3>
-        <hr />
-        <div className="row">
-          <Stars />
-          <Button />
-          <Answer />
-        </div>
-        <br />
-        <Numbers />
+      <div>
+        <Game />
       </div>
     );
   }
