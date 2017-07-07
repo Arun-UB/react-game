@@ -88,6 +88,13 @@ const Numbers = (props) => {
 
 Numbers.list = _.range(1,10);
 
+const DoneFrame = (props) => {
+  return (
+    <div className="text-center">
+      <h2>{props.doneStatus} </h2>
+    </div>
+  )
+}
 class Game extends Component {
   static randomNumber = () => 1 + Math.floor(Math.random()*9);
   state = {
@@ -95,7 +102,8 @@ class Game extends Component {
     numberOfStars: Game.randomNumber(),
     answerIsCorrect:null,
     usedNumbers :[],
-    redraws: 5
+    redraws: 5,
+    doneStatus:null
 
   }
 
@@ -146,7 +154,8 @@ class Game extends Component {
       numberOfStars,
       answerIsCorrect,
       usedNumbers,
-      redraws} = this.state;
+      redraws,
+      doneStatus} = this.state;
 
     return (
       <div className="container">
@@ -164,9 +173,12 @@ class Game extends Component {
                    unselectNumber = {this.unselectNumber}/>
         </div>
         <br />
+        {doneStatus ?
+        <DoneFrame doneStatus={doneStatus}/> :
         <Numbers selectedNumbers={selectedNumbers} 
                  selectNumber = {this.selectNumber}
                  usedNumbers = {usedNumbers}/>
+        }
       </div>
       
     );
