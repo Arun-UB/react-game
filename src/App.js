@@ -30,7 +30,8 @@ const Button = (props) => {
   switch(props.answerIsCorrect){
     case true:
       button = 
-      <button className="btn btn-success">
+      <button className="btn btn-success"
+        onClick={props.acceptAnswer}>
        <i className="fa fa-check"></i>
       </button>
       break;
@@ -52,14 +53,23 @@ const Button = (props) => {
       break;
   }
     return (
-      <div className="col-2">
+      <div className="col-2 text-center">
       {button}
+      <br/> <br/>
+      <button className="btn btn-sm btn-warning"
+          onClick = {props.redraw}
+          disabled = {props.redraws ===0}>
+        <i className="fa fa-refresh"> {props.redraws}</i>
+      </button>
     </div>
     );
 }
 
 const Numbers = (props) => {
   const numberClassName = (number) => {
+    if(props.usedNumbers.indexOf(number) >=0)
+      return 'used';
+
     if(props.selectedNumbers.indexOf(number) >=0)
       return 'selected';
   }
@@ -82,7 +92,9 @@ class Game extends Component {
   state = {
     selectedNumbers:[],
     numberOfStars: 1 + Math.floor(Math.random()*9),
-    answerIsCorrect:null
+    answerIsCorrect:null,
+    usedNumbers :[],
+    redraws: 5
 
   }
 
@@ -108,11 +120,32 @@ class Game extends Component {
     }));
   };
 
+  acceptAnswer = () => {
+    this.setState(prevState => ({
+      usedNumbers:prevState.usedNumbers.concat(prevState.selectedNumbers),
+      selectedNumbers: [],
+      answerIsCorrect: null,
+      numberOfStars: 1 + Math.floor(Math.random()*9)
+    }))
+  }
+
+  redraw = () => {
+    if(this.state.redraws >0){
+      this.setState(prevState => ({
+        numberOfStars: 1 + Math.floor(Math.random()*9),
+        answerIsCorrect: null,
+        selectedNumbers: [],
+        redraws :prevState.redraws - 1
+      }));
+    }
+  }
   render() {
     const {
       selectedNumbers,
       numberOfStars,
-      answerIsCorrect} = this.state;
+      answerIsCorrect,
+      usedNumbers,
+      redraws} = this.state;
 
     return (
       <div className="container">
@@ -122,13 +155,17 @@ class Game extends Component {
           <Stars numberOfStars={numberOfStars}/>
           <Button selectedNumbers={selectedNumbers} 
                   checkAnswer = {this.checkAnswer}
-                  answerIsCorrect = {answerIsCorrect} />
+                  answerIsCorrect = {answerIsCorrect} 
+                  acceptAnswer = {this.acceptAnswer}
+                  redraw = {this.redraw}
+                  redraws = {redraws}/>
           <Answer selectedNumbers={selectedNumbers} 
                    unselectNumber = {this.unselectNumber}/>
         </div>
         <br />
         <Numbers selectedNumbers={selectedNumbers} 
-                 selectNumber = {this.selectNumber}/>
+                 selectNumber = {this.selectNumber}
+                 usedNumbers = {usedNumbers}/>
       </div>
       
     );
