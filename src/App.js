@@ -3,7 +3,7 @@ import './App.css';
 import _ from 'lodash';
 
 const Stars = (props) => {
-  // const numberOfStars = 1 + Math.floor(Math.random()*9);
+  // const numberOfStars = Game.randomNumber();
 
     return (
       <div className="col-5">
@@ -89,9 +89,10 @@ const Numbers = (props) => {
 Numbers.list = _.range(1,10);
 
 class Game extends Component {
+  static randomNumber = () => 1 + Math.floor(Math.random()*9);
   state = {
     selectedNumbers:[],
-    numberOfStars: 1 + Math.floor(Math.random()*9),
+    numberOfStars: Game.randomNumber(),
     answerIsCorrect:null,
     usedNumbers :[],
     redraws: 5
@@ -125,14 +126,14 @@ class Game extends Component {
       usedNumbers:prevState.usedNumbers.concat(prevState.selectedNumbers),
       selectedNumbers: [],
       answerIsCorrect: null,
-      numberOfStars: 1 + Math.floor(Math.random()*9)
+      numberOfStars: Game.randomNumber()
     }))
   }
 
   redraw = () => {
     if(this.state.redraws >0){
       this.setState(prevState => ({
-        numberOfStars: 1 + Math.floor(Math.random()*9),
+        numberOfStars: Game.randomNumber(),
         answerIsCorrect: null,
         selectedNumbers: [],
         redraws :prevState.redraws - 1
