@@ -181,10 +181,10 @@ class Game extends Component {
   updateDoneStatus = () => {
     this.setState(prevState => {
       if(prevState.usedNumbers.length === 9){
-        return {doneStatus:'Nice!'};
+        return {doneStatus:'You\'re done!Nice!🎉🎉'};
       }
       if(prevState.redraws===0 && !this.possibleSolutions(prevState)){
-        return {doneStatus:'Game Over!'};
+        return {doneStatus:'Game Over!☹️'};
       }
     });
   }
